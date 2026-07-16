@@ -3,6 +3,7 @@
     <File Path="init.sql" />
   </Folder>
   <Folder Name="/Frontend/" />
+  <Folder Name="/Interfaces/" />
   <Folder Name="/nginx/" />
   <Folder Name="/Solution Items/">
     <File Path="docker-compose.yml" />
