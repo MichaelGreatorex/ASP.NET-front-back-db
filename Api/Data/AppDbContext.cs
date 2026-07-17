@@ -1,7 +1,7 @@
-﻿using Api.Models;
+﻿using MarketPulse.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api.Data;
+namespace MarketPulse.Api.Data;
 
 public class AppDbContext : DbContext
 {

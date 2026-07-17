@@ -1,7 +1,7 @@
-using Api.Data;
+using MarketPulse.Api.Data;
 using Microsoft.EntityFrameworkCore;
-using Api.Interfaces;
-using Api.Services;
+using MarketPulse.Api.Interfaces;
+using MarketPulse.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,12 +10,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IHealthService, HealthService>();
+builder.Services.AddScoped<IHealthHistoryService, HealthHistoryService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -31,5 +33,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 
 app.Run();

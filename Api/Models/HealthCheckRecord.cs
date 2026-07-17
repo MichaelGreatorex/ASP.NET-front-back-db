@@ -1,4 +1,4 @@
-﻿namespace Api.Models;
+﻿namespace MarketPulse.Api.Models;
 
 public class HealthCheckRecord
 {

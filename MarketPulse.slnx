@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/database/" />
+  <Folder Name="/nginx/" />
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="Api/MarketPulse.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/MarketPulse.Frontend/" />
+  <Folder Name="/tests/" />
+</Solution>
