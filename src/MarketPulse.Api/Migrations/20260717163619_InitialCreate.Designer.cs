@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MarketPulse.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260717151115_AddInstrumentTable")]
-    partial class AddInstrumentTable
+    [Migration("20260717163619_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,30 +25,7 @@ namespace MarketPulse.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MarketPulse.Api.Models.HealthCheckRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CheckedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("ResponseTimeMs")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("HealthChecks");
-                });
-
-            modelBuilder.Entity("MarketPulse.Api.Models.Instrument", b =>
+            modelBuilder.Entity("MarketPulse.Api.Models.FinancialInstrument", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -75,7 +52,36 @@ namespace MarketPulse.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Instruments");
+                    b.ToTable("Instruments", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Currency = "USD",
+                            Exchange = "NASDAQ",
+                            IsActive = true,
+                            Name = "Apple Inc.",
+                            Ticker = "AAPL"
+                        },
+                        new
+                        {
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            Currency = "USD",
+                            Exchange = "NASDAQ",
+                            IsActive = true,
+                            Name = "Microsoft Corporation",
+                            Ticker = "MSFT"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                            Currency = "USD",
+                            Exchange = "NASDAQ",
+                            IsActive = true,
+                            Name = "NVIDIA Corporation",
+                            Ticker = "NVDA"
+                        });
                 });
 #pragma warning restore 612, 618
         }

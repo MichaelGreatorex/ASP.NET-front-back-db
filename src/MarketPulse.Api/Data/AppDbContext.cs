@@ -10,9 +10,6 @@ public class AppDbContext : DbContext
     {
     }
 
-
-
-    public DbSet<HealthCheckRecord> HealthChecks => Set<HealthCheckRecord>();
     public DbSet<FinancialInstrument> FinancialInstruments => Set<FinancialInstrument>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

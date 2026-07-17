@@ -80,29 +80,6 @@ namespace MarketPulse.Api.Migrations
                             Ticker = "NVDA"
                         });
                 });
-
-            modelBuilder.Entity("MarketPulse.Api.Models.HealthCheckRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CheckedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("ResponseTimeMs")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("HealthChecks");
-                });
 #pragma warning restore 612, 618
         }
     }
