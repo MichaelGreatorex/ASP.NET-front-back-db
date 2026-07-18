@@ -1,4 +1,6 @@
 ﻿using MarketPulse.Api.DTOs;
+using MarketPulse.Api.Models.Pagination;
+using MarketPulse.Api.Models.Queries;
 using MarketPulse.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,17 +18,14 @@ public class FinancialInstrumentsController : ControllerBase
         _financialInstrumentService = financialInstrumentService;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<List<FinancialInstrumentDto>>> Get(
-        [FromQuery] string? exchange,
-        [FromQuery] string? search)
-    {
-        var instruments =
-            await _financialInstrumentService.GetAllAsync(
-                exchange,
-                search);
 
-        return Ok(instruments);
+    [HttpGet]
+    public async Task<ActionResult<PagedResult<FinancialInstrumentDto>>> Get(
+        [FromQuery] FinancialInstrumentQuery query)
+    {
+        var result = await _financialInstrumentService.GetAllAsync(query);
+
+        return Ok(result);
     }
 
     [HttpGet("{ticker}")]
@@ -41,4 +40,5 @@ public class FinancialInstrumentsController : ControllerBase
 
         return Ok(instrument);
     }
+
 }

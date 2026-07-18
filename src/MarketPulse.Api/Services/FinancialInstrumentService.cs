@@ -2,6 +2,8 @@
 using MarketPulse.Api.Data;
 using MarketPulse.Api.DTOs;
 using MarketPulse.Api.Models;
+using MarketPulse.Api.Models.Pagination;
+using MarketPulse.Api.Models.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarketPulse.Api.Services;
@@ -26,35 +28,48 @@ public class FinancialInstrumentService
         _context = context;
     }
 
-    public async Task<List<FinancialInstrumentDto>> GetAllAsync(
-        string? exchange = null,
-        string? search = null)
+    public async Task<PagedResult<FinancialInstrumentDto>> GetAllAsync(
+        FinancialInstrumentQuery query)
     {
-        var query = _context.FinancialInstruments
+        // Start with the base query for financial instruments
+        var instruments = _context.FinancialInstruments
             .AsNoTracking()
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(exchange))
+        if (!string.IsNullOrWhiteSpace(query.Exchange))
         {
-            exchange = exchange.Trim().ToUpperInvariant();
+            var exchange = query.Exchange.Trim().ToUpperInvariant();
 
-            query = query.Where(i =>
-                i.Exchange == exchange);
+            instruments = instruments.Where(i => i.Exchange == exchange);
         }
 
-        if (!string.IsNullOrWhiteSpace(search))
+        if (!string.IsNullOrWhiteSpace(query.Search))
         {
-            search = search.Trim();
+            var search = query.Search.Trim();
 
-            query = query.Where(i =>
-                i.Ticker.Contains(search) ||
-                i.Name.Contains(search));
+            instruments = instruments.Where(i =>
+                i.Name.Contains(search) ||
+                i.Ticker.Contains(search));
         }
 
-        return await query
+        // Get the total count before applying pagination
+        var totalCount = await instruments.CountAsync();
+
+        // Apply pagination and projection to DTOs
+        var items = await instruments
             .OrderBy(i => i.Ticker)
+            .Skip(query.Skip)
+            .Take(query.Take)
             .Select(ToDto)
             .ToListAsync();
+
+        return new PagedResult<FinancialInstrumentDto>
+        {
+            Items = items,
+            Page = query.Page,
+            PageSize = query.PageSize,
+            TotalCount = totalCount
+        };
     }
 
     public async Task<FinancialInstrumentDto?> GetByTickerAsync(string ticker)
