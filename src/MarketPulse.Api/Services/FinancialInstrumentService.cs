@@ -26,10 +26,32 @@ public class FinancialInstrumentService
         _context = context;
     }
 
-    public async Task<List<FinancialInstrumentDto>> GetAllAsync()
+    public async Task<List<FinancialInstrumentDto>> GetAllAsync(
+        string? exchange = null,
+        string? search = null)
     {
-        return await _context.FinancialInstruments
+        var query = _context.FinancialInstruments
             .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(exchange))
+        {
+            exchange = exchange.Trim().ToUpperInvariant();
+
+            query = query.Where(i =>
+                i.Exchange == exchange);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            search = search.Trim();
+
+            query = query.Where(i =>
+                i.Ticker.Contains(search) ||
+                i.Name.Contains(search));
+        }
+
+        return await query
             .OrderBy(i => i.Ticker)
             .Select(ToDto)
             .ToListAsync();

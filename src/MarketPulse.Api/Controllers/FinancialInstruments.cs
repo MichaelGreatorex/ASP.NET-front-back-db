@@ -17,10 +17,14 @@ public class FinancialInstrumentsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult> Get()
+    public async Task<ActionResult<List<FinancialInstrumentDto>>> Get(
+        [FromQuery] string? exchange,
+        [FromQuery] string? search)
     {
         var instruments =
-            await _financialInstrumentService.GetAllAsync();
+            await _financialInstrumentService.GetAllAsync(
+                exchange,
+                search);
 
         return Ok(instruments);
     }
