@@ -1,6 +1,7 @@
-﻿
-using MarketPulse.Api.Data;
+﻿using MarketPulse.Api.Data;
 using MarketPulse.Api.DTOs;
+using MarketPulse.Api.Models.Pagination;
+using MarketPulse.Api.Models.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarketPulse.Api.Services;
@@ -30,4 +31,20 @@ public class MarketPriceService
             })
             .FirstOrDefaultAsync();
     }
+
+
+    public async Task<PagedResult<MarketPriceDto>> GetHistoryAsync(
+        string ticker,
+        PriceHistoryQuery query)
+    {
+        return new PagedResult<MarketPriceDto>
+        {
+            Items = [],
+            Page = query.Page,
+            PageSize = query.PageSize,
+            TotalCount = 0
+        };
+    }
+
+
 }

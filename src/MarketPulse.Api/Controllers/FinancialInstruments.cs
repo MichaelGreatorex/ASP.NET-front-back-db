@@ -56,4 +56,13 @@ public class FinancialInstrumentsController : ControllerBase
         }
         return Ok(latestPrice);
     }
+
+    [HttpGet("{ticker}/prices/history")]
+    public async Task<ActionResult<PagedResult<MarketPriceDto>>> GetPriceHistory(
+        [FromRoute] string ticker,
+        [FromQuery] PriceHistoryQuery query)
+    {
+        var history = await _marketPriceService.GetHistoryAsync(ticker, query);
+        return Ok(history);
+    }
 }
