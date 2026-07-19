@@ -13,4 +13,10 @@ public class FinancialInstrument
     public string Currency { get; set; } = "USD";
 
     public bool IsActive { get; set; } = true;
+
+    public ICollection<MarketPrice> Prices { get; set; }
+    = new List<MarketPrice>();
 }
+
+
+
