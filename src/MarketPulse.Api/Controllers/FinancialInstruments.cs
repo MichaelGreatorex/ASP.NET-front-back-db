@@ -65,4 +65,5 @@ public class FinancialInstrumentsController : ControllerBase
         var history = await _marketPriceService.GetHistoryAsync(ticker, query);
         return Ok(history);
     }
+    
 }

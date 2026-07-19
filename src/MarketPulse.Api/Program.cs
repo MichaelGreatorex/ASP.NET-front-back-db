@@ -2,6 +2,9 @@ using MarketPulse.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using MarketPulse.Api.Interfaces;
 using MarketPulse.Api.Services;
+using MarketPulse.Api.Configuration;
+using MarketPulse.Api.Clients;
+using MarketPulse.Api.Clients.Finnhub;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +14,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<FinancialInstrumentService>();
+
 builder.Services.AddScoped<MarketPriceService>();
+
+builder.Services.Configure<FinnhubOptions>(
+    builder.Configuration.GetSection(FinnhubOptions.SectionName));
+
+builder.Services.AddHttpClient<IMarketDataClient, FinnhubMarketDataClient>(
+    (serviceProvider, client) =>
+    {
+        var options = serviceProvider
+            .GetRequiredService<
+                Microsoft.Extensions.Options.IOptions<FinnhubOptions>>()
+            .Value;
+
+        client.BaseAddress = new Uri(options.BaseUrl);
+    });
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHealthChecks();
