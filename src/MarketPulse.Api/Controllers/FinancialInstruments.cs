@@ -11,11 +11,14 @@ namespace MarketPulse.Api.Controllers;
 public class FinancialInstrumentsController : ControllerBase
 {
     private readonly FinancialInstrumentService _financialInstrumentService;
+    private readonly MarketPriceService _marketPriceService;
 
     public FinancialInstrumentsController(
-        FinancialInstrumentService financialInstrumentService)
+        FinancialInstrumentService financialInstrumentService,
+        MarketPriceService marketPriceService)
     {
         _financialInstrumentService = financialInstrumentService;
+        _marketPriceService = marketPriceService;
     }
 
 
@@ -29,7 +32,8 @@ public class FinancialInstrumentsController : ControllerBase
     }
 
     [HttpGet("{ticker}")]
-    public async Task<ActionResult<FinancialInstrumentDto>> GetByTicker(string ticker)
+    public async Task<ActionResult<FinancialInstrumentDto>> GetByTicker(
+        [FromRoute] string ticker)
     {
         var instrument = await _financialInstrumentService.GetByTickerAsync(ticker);
 
@@ -41,4 +45,15 @@ public class FinancialInstrumentsController : ControllerBase
         return Ok(instrument);
     }
 
+    [HttpGet("{ticker}/prices/latest")] 
+    public async Task<ActionResult<MarketPriceDto>> GetLatestPrice(
+        [FromRoute] string ticker)
+    {
+        var latestPrice = await _marketPriceService.GetLatestAsync(ticker);
+        if (latestPrice is null)
+        {
+            return NotFound();
+        }
+        return Ok(latestPrice);
+    }
 }
