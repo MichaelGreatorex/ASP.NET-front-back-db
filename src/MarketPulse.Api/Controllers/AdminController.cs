@@ -16,6 +16,16 @@ public class AdminController : ControllerBase
         _importService = importService;
     }
 
+    /// <summary>
+    /// Manually triggers a market price import.
+    /// </summary>
+    /// <remarks>
+    /// Intended for development and testing.
+    /// Production imports are handled automatically by the background worker.
+    /// </remarks>
+    /// 
+    [ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+
     [HttpPost("import-prices")]
     public async Task<ActionResult<ImportResult>> ImportPrices(
         CancellationToken cancellationToken)

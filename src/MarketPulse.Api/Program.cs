@@ -1,10 +1,12 @@
-using MarketPulse.Api.Data;
-using Microsoft.EntityFrameworkCore;
-using MarketPulse.Api.Interfaces;
-using MarketPulse.Api.Services;
-using MarketPulse.Api.Configuration;
 using MarketPulse.Api.Clients;
 using MarketPulse.Api.Clients.Finnhub;
+using MarketPulse.Api.Configuration;
+using MarketPulse.Api.Data;
+using MarketPulse.Api.HealthChecks;
+using MarketPulse.Api.Interfaces;
+using MarketPulse.Api.Services;
+using MarketPulse.Api.Services.Background;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +16,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHealthChecks()
+    .AddNpgSql(
+        builder.Configuration.GetConnectionString("DefaultConnection")!)
+    .AddCheck<FinnhubHealthCheck>("finnhub");
+
 builder.Services.AddScoped<FinancialInstrumentService>();
 
 builder.Services.AddScoped<MarketPriceService>();
 
 builder.Services.AddScoped<MarketPriceImportService>();
+
+builder.Services.AddHostedService<MarketPriceImportWorker>();
+
+builder.Services.Configure<MarketDataOptions>(
+    builder.Configuration.GetSection(MarketDataOptions.SectionName));
 
 builder.Services.Configure<FinnhubOptions>(
     builder.Configuration.GetSection(FinnhubOptions.SectionName));
@@ -61,5 +73,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHealthChecks("/health");
+
+app.MapHealthChecks("/ready");
 
 app.Run();

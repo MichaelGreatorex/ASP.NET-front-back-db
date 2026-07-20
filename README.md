@@ -20,3 +20,5 @@ MarketPulse is a containerised ASP.NET Core application demonstrating modern sof
 - Provide production-style health monitoring
 - Containerise all services
 - Implement CI/CD with GitHub Actions
+
+## README Test
