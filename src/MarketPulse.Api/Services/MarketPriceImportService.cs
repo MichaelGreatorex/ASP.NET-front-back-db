@@ -28,7 +28,9 @@ public class MarketPriceImportService
         CancellationToken cancellationToken = default)
     {
         var stopwatch = Stopwatch.StartNew();
-
+        
+        var skipped = 0;
+        
         var instruments = await _context.FinancialInstruments
             .Where(i => i.IsActive)
             .AsNoTracking()
@@ -55,10 +57,30 @@ public class MarketPriceImportService
                 continue;
             }
 
-            prices.Add(
-                MarketPriceMapper.ToMarketPrice(
-                    quote,
-                    instrument.Id));
+            var marketPrice = MarketPriceMapper.ToMarketPrice(
+                quote,
+                instrument.Id);
+
+            var exists = await _context.MarketPrices.AnyAsync(
+                p => p.FinancialInstrumentId == marketPrice.FinancialInstrumentId &&
+                     p.TimestampUtc == marketPrice.TimestampUtc,
+                cancellationToken);
+
+            if (exists)
+            {
+                skipped++;
+
+                _logger.LogInformation(
+                    "Price for {Ticker} at {Timestamp} already exists, skipping",
+                    instrument.Ticker,
+                    marketPrice.TimestampUtc);  
+                
+                continue;
+            }
+
+
+            prices.Add(marketPrice);
+
         }
 
         _context.MarketPrices.AddRange(prices);
@@ -78,7 +100,7 @@ public class MarketPriceImportService
         return new ImportResult
         {
             Imported = prices.Count,
-            Skipped = 0,
+            Skipped = skipped,
             Failed = 0,
             DurationMs = stopwatch.ElapsedMilliseconds
         };

@@ -52,6 +52,14 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<MarketPrice>().ToTable("MarketPrices");
 
         modelBuilder.Entity<MarketPrice>()
+            .HasIndex(p => new
+            {
+                p.FinancialInstrumentId,
+                p.TimestampUtc
+            })
+            .IsUnique();
+
+        modelBuilder.Entity<MarketPrice>()
             .HasOne(mp => mp.FinancialInstrument)
             .WithMany(fi => fi.Prices)
             .HasForeignKey(mp => mp.FinancialInstrumentId)
