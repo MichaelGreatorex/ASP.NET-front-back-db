@@ -12,7 +12,7 @@ market data ingestion service.
 
 ## Features
 
-### Backend
+### Backend - (Current Repository)
 
 -   Live market data integration using the Finnhub API
 -   Scheduled background ingestion using `BackgroundService`
@@ -27,7 +27,7 @@ market data ingestion service.
 -   Configuration using the Options pattern
 -   Dockerised PostgreSQL development environment
 
-### Frontend *(coming next)*
+### Frontend (See marketpulse-web)
 
 -   React dashboard
 -   Live market overview

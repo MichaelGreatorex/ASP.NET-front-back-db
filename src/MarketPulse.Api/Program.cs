@@ -29,6 +29,8 @@ builder.Services.AddScoped<MarketPriceImportService>();
 
 builder.Services.AddHostedService<MarketPriceImportWorker>();
 
+builder.Services.AddScoped<DashboardService>();
+
 builder.Services.Configure<MarketDataOptions>(
     builder.Configuration.GetSection(MarketDataOptions.SectionName));
 
