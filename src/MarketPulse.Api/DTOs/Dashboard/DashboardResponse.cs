@@ -4,13 +4,7 @@ namespace MarketPulse.Api.DTOs.Dashboard;
 
 public class DashboardResponse
 {
-    public int TrackedInstruments { get; init; }
-
-    public int MarketPrices { get; init; }
-
-    public DateTime? LastImportUtc { get; init; }
-
-    public List<DashboardInstrument> Instruments { get; init; } = [];
+    public DashboardOverviewDto Overview { get; set; } = new();
 
     public SystemStatusDto SystemStatus { get; set; } = new();
 

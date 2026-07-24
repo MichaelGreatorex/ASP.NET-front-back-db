@@ -47,7 +47,7 @@ namespace MarketPulse.Api.Services
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<DashboardOverviewDto> GetSummaryAsync(
+    public async Task<DashboardOverviewDto> GetOverviewAsync(
             CancellationToken cancellationToken = default)
         {
             return new DashboardOverviewDto
